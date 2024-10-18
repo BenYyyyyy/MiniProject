@@ -1,0 +1,7 @@
+_target_: src.data.glue_datamodule.GLUEDataModule
+model_name_or_path: ${hydra:runtime.cwd}/model_configs/qbert_5qubit_10
+task_name: qnli
+max_seq_length: 512
+train_batch_size: 32
+eval_batch_size: 32
+learning_rate: 1e-3

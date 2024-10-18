@@ -1,0 +1,17 @@
+wandb       
+tqdm 
+torch 
+transformers   
+tokenizers 
+nltk
+scikit-learn 
+scipy    
+pandas 
+numpy  
+gensim 
+datasets
+anthropic  
+lightning
+rich 
+PennyLane 
+PennyLane-Lightning

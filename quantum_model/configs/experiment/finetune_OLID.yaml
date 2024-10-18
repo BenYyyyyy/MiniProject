@@ -1,0 +1,60 @@
+# @package _global_
+
+# to execute this experiment run:
+# python train.py experiment=example
+
+defaults:
+  - override /data: bert_qml_finetune.yaml
+  - override /model: bert_qml_finetune.yaml
+  - override /trainer: bert_qml_finetune.yaml
+  - override /logger: wandb_finetune.yaml
+  #- override /callbacks: null
+
+# all parameters below will be merged with parameters from default configurations set above
+# this allows you to overwrite only specified parameters
+ckpt_path: ${hydra:runtime.cwd}/model/ckpt-QCBERT-5qubit-tweethate-bs32-fold_0-no_clean/qbert-epoch=07-global_step=0-val_loss=0.181.ckpt
+
+seed: 12345
+dataset: OLID
+
+qubits: 5
+fold: 0
+
+train: False
+test: True
+
+trainer:
+  min_epochs: 1
+  max_epochs: 20
+  devices: 1
+
+
+data:
+  #_target_: src.data.tweethate_datamodule.tweethate_DataModule
+  _target_: src.data.OLID_datamodule.OLID_DataModule
+  task_name: ${dataset}
+  dataset_path: "TwitterHate_5fold_no_clean/"
+  fold_num: ${fold}
+  
+
+model:
+  _target_: src.models.qml_bert_finetune_module.TransformerLitModule
+  task_name: ${dataset}
+  learning_rate: 5e-3
+  text_save_dir: "output_file/QCBERT_OLID/"
+  fold_num: ${fold}
+  encoder_trainable: false
+  projection_trainable : true
+  n_unitary_circuit_layers : 5
+  config_path: ${hydra:runtime.cwd}/model_configs/qbert_${qubits}qubit_10/config.json
+  checkpoint_path: ${hydra:runtime.cwd}/model/checkpoints-continue-pretrain-5qubit-bs64-EncoderTrainable-10depth/qbert-epoch=113-global_step=0-train_loss=1.84.ckpt
+  
+logger:
+  wandb:
+    #name: "${qubits}qubit-finetune-${dataset}-BERT+QCLS-20depth"
+    name: "${qubits}qubit-${dataset}-noisyQCBERT-${fold}-10depth-5U-lr53_no_clean"
+    #name: "${qubits}qubit-finetune-${dataset}-BERT-lr55"
+    #name: "${qubits}qubit-finetune-${dataset}-wo-20depth-5U-lr3"
+    #save_dir: "${paths.output_dir}/${dataset}"
+  csv:
+    name: "csv/${dataset}/"

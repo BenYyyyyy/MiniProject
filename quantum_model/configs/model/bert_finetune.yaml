@@ -1,0 +1,13 @@
+_target_: src.models.bert_finetune_model.SequenceClassificationTransformer
+huggingface_model: bert-base-uncased
+#num_labels: 2
+task_name: mrpc
+learning_rate: 5e-5
+adam_epsilon: 1e-8
+warmup_steps: 0
+weight_decay: 0.0
+train_batch_size: 32
+eval_batch_size: 32
+encoder_trainable: false
+projection_trainable: true
+#eval_splits: ['validation']
